@@ -1,0 +1,12 @@
+hue:
+  url: http://192.168.178.20/api
+  user: <user>
+  groups: [7, 10]
+  duration: 2
+sunrise:
+  url: https://api.sunrise-sunset.org
+  latitude: 53.7149877
+  longitude: -6.3524183
+ring:
+  username: <ring login>
+  password: <ring password>
