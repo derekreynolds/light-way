@@ -69,7 +69,7 @@ class App {
                         groups.forEach(group => hueService.switchOnLightGroup(group));
                         var duration = config.get<number>('hue.duration') * 60 * 1000;
                         let startTime = new Date(Date.now() + duration);
-                        let endTime = new Date(startTime.getTime() + 1000);
+                        let endTime = new Date(startTime.getTime() + 2000);
                         schedule.scheduleJob({ start: startTime, end: endTime, rule: '*/1 * * * * *' }, () => {
                             groups.forEach(group => hueService.switchOffLightGroup(group));
                         });                    
