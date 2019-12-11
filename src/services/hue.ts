@@ -1,7 +1,5 @@
 import * as l from "@derekreynolds/logger";
 
-import * as r from "request-promise-native";
-
 import * as config from 'config';
 import * as request from "request-promise-native";
 
@@ -24,7 +22,7 @@ export class HueService {
       json: true
     };
 
-    return r.get(options); 
+    return request.get(options); 
   }
 
   /**
@@ -64,7 +62,9 @@ export class HueService {
       json: true
     };
 
-    r.put(options).then((result: string) => l.info(result));    
+    request.put(options)
+            .then((result: string) => l.info(result))
+            .catch((err) => l.error(err));    
   }
 
 }

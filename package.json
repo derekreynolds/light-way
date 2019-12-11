@@ -4,7 +4,7 @@
   "description": "Smart Home service to activate lights in the hall when Ring motion sensor alerts when it is dark.",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc && cp -r config/ dist",
+    "build": "tsc && cp -r config dist",
     "start": "ts-node ./src/server.ts",
     "dev": "nodemon/bin/nodemon.js --port=5566",
     "debug": "node --inspect dist/",

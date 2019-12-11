@@ -12,7 +12,6 @@ export class SunriseService {
     this.baseEndpoint = config.get('sunrise.url');
   }
 
-
   public getSunrise(lat: number, lon: number) : request.RequestPromise<any> {
 
     var locationEndpoint = this.baseEndpoint + `/json?lat=${lat}&lng=${lon}&formatted=0`;
