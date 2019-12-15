@@ -37,7 +37,9 @@ export class RingService {
 
   }
 
-  public registerActivityCallback(callback: (activity: any) => any) {   
+  public registerActivityCallback(callback: (activity: any) => any) {
+    this.ringApi.events.removeAllListeners('activity');   
     this.ringApi.events.on('activity', callback);
   }
+
 }

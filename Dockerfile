@@ -8,6 +8,8 @@ RUN npm install --production
 
 RUN npm install pm2 -g
 
+RUN npm install typescript -g
+
 ADD . /usr/src/app
 
 RUN npm run build

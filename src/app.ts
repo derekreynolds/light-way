@@ -57,10 +57,19 @@ class App {
             l.info(`Sunset ${result.results.sunset}`); 
             l.info(`Sunrise ${result.results.sunrise}`);     
             sunrise = new Sunrise(moment(result.results.sunrise), moment(result.results.sunset));
+            this.setUpRing(sunrise);  
         }).catch((e) => {
             l.error(e);
         });        
 
+        schedule.scheduleJob("0 */12 * * *", () => {
+            this.setUpRing(sunrise);       
+        }); 
+
+        
+     }
+
+     private setUpRing(sunrise: Sunrise): void {
         this.ringService.init().then(() => {
             this.ringService.registerActivityCallback((activity: any) => {
                 // If is nighttime, switch on the lights
@@ -82,9 +91,7 @@ class App {
             });
         }).catch((e) => {
             l.error(e);
-        });            
-
-        
+        });  
      }
 
 
