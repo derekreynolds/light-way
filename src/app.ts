@@ -71,23 +71,25 @@ class App {
 
      private setUpRing(sunrise: Sunrise): void {
         this.ringService.init().then(() => {
-            this.ringService.registerActivityCallback((activity: any) => {
-                // If is nighttime, switch on the lights
+            this.ringService.registerMotionCallback((activity: Boolean) => {
+                // If is nighttime, switch on the lights 
                 if(moment().isBetween(sunrise.sunset, sunrise.sunrise.add(1, 'days'))) {
-                    if(activity.motion) {
-                       
+                    if(activity) {                       
                         var groups = config.get<Array<number>>('hue.groups');
-
                         groups.forEach(group => this.hueService.switchOnLightGroup(group));
                         var duration = config.get<number>('hue.duration') * 60 * 1000;
                         let startTime = new Date(Date.now() + duration);
                         let endTime = new Date(startTime.getTime() + 2000);
-                        schedule.scheduleJob({ start: startTime, end: endTime, rule: '*/1 * * * * *' }, () => {
+                        schedule.scheduleJob({ start: startTime, end: endTime, rule: '*/2 * * * * *' }, () => {
                             groups.forEach(group => this.hueService.switchOffLightGroup(group));
                         });                    
                     }
-
                 }
+                
+            });
+            this.ringService.registerRingCallback(() => {
+                // If is nighttime, switch on the lights           
+
             });
         }).catch((e) => {
             l.error(e);

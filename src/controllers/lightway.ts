@@ -83,7 +83,7 @@ export class LightWayController {
     }); 
 
     this.ringService.init().then(() => {
-      this.ringService.registerActivityCallback((activity: any) => {
+      this.ringService.registerMotionCallback((activity: any) => {
           // If is nighttime, switch on the lights
           if(moment().isBetween(sunrise.sunset, sunrise.sunrise.add(1, 'days'))) {
               if(activity.motion) {

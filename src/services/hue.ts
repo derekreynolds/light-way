@@ -63,7 +63,10 @@ export class HueService {
     };
 
     request.put(options)
-            .then((result: string) => l.info(result))
+            .then((result: string) => {
+              if(result)
+                l.info(result)
+            })
             .catch((err) => l.error(err));    
   }
 
