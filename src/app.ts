@@ -13,13 +13,13 @@ import { HueService } from './services/hue';
 
 class App {
 
-    public app: express.Application;
-
-    private ringService = new RingService();
+    public app: express.Application;    
 
     private sunriseService = new SunriseService();
 
     private hueService = new HueService();
+
+    private ringService = new RingService(this.hueService, this.sunriseService);
 
     public lightWayRoutes: LightWayRoutes = new LightWayRoutes(this.ringService, this.sunriseService, this.hueService);
 
@@ -37,65 +37,16 @@ class App {
         // support application/json type post data
         this.app.use(bodyParser.json());
         //support application/x-www-form-urlencoded post data
-        this.app.use(bodyParser.urlencoded({ extended: false }));
+        this.app.use(bodyParser.urlencoded({ extended: false }));       
         
-        var sunrise: Sunrise;
-
-        schedule.scheduleJob({hour: 12, minute: 0}, () => {
-            l.info("Getting Sunrise for today");
-            this.sunriseService.getSunrise(config.get('sunrise.latitude'), config.get('sunrise.longitude')).then((result) => {
-                l.info(`Sunset ${result.results.sunset}`); 
-                l.info(`Sunrise ${result.results.sunrise}`);          
-                sunrise = new Sunrise(moment(result.results.sunrise), moment(result.results.sunset));
-            }).catch((e) => {
-                l.error(e);
-            });
+        this.ringService.init().then(result => {
+            this.ringService.setupMotionDetection(); 
+        }).catch(error => {
+            l.error('Error setting up ring connetion.');
         });
+         
         
-        this.sunriseService.getSunrise(config.get('sunrise.latitude'), config.get('sunrise.longitude')).then((result) => { 
-            var m = moment(); 
-            l.info(`Sunset ${result.results.sunset}`); 
-            l.info(`Sunrise ${result.results.sunrise}`);     
-            sunrise = new Sunrise(moment(result.results.sunrise), moment(result.results.sunset));
-            this.setUpRing(sunrise);  
-        }).catch((e) => {
-            l.error(e);
-        });        
-
-        schedule.scheduleJob("0 */12 * * *", () => {
-            this.setUpRing(sunrise);       
-        }); 
-
-        
-     }
-
-     private setUpRing(sunrise: Sunrise): void {
-        this.ringService.init().then(() => {
-            this.ringService.registerMotionCallback((activity: Boolean) => {
-                // If is nighttime, switch on the lights 
-                if(moment().isBetween(sunrise.sunset, sunrise.sunrise.add(1, 'days'))) {
-                    if(activity) {                       
-                        var groups = config.get<Array<number>>('hue.groups');
-                        groups.forEach(group => this.hueService.switchOnLightGroup(group));
-                        var duration = config.get<number>('hue.duration') * 60 * 1000;
-                        let startTime = new Date(Date.now() + duration);
-                        let endTime = new Date(startTime.getTime() + 2000);
-                        schedule.scheduleJob({ start: startTime, end: endTime, rule: '*/2 * * * * *' }, () => {
-                            groups.forEach(group => this.hueService.switchOffLightGroup(group));
-                        });                    
-                    }
-                }
-                
-            });
-            this.ringService.registerRingCallback(() => {
-                // If is nighttime, switch on the lights           
-
-            });
-        }).catch((e) => {
-            l.error(e);
-        });  
-     }
-
+    }
 
 }
 

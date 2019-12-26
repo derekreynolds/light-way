@@ -63,11 +63,12 @@ export class HueService {
     };
 
     request.put(options)
-            .then((result: string) => {
-              if(result)
-                l.info(result)
+            .then((result: string) => {              
+              l.info("SUCCESS")
             })
-            .catch((err) => l.error(err));    
+            .catch((err) => {
+              l.error("FAILURE")            
+            });    
   }
 
 }

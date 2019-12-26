@@ -22,9 +22,6 @@ export class LightWayRoutes {
             
         app.route('/lightway/sunrise')
             .get(this.lightWayController.sunrise);
-
-        app.route('/lightway/reset')
-            .get(this.lightWayController.reset);     
                        
     }
 }
